@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Messenger Bulk Sender - Messager DM Bot",
+    "description": ""
+  },
+  "extDescription": {
+    "message": "Send mass DM (direct message) to specify users for Facebook Automation.",
+    "description": ""
+  }
+}
