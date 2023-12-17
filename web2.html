@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Box Management</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        width: 80%;
+        max-width: 800px;
+        margin-bottom: 20px;
+      }
+
+      .grid-item {
+        border: 1px solid black;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .upper-grid .selected,
+      .lower-grid .selected {
+        background-color: #a3a3a3;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Box Management</h2>
+    <h1>upper</h1>
+    <div class="grid-container upper-grid" id="upperGrid">
+      <!-- Add grid items dynamically using JavaScript -->
+    </div>
+    <h1>lower</h1>
+    <div class="grid-container lower-grid" id="lowerGrid">
+      <!-- Add grid items dynamically using JavaScript -->
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const upperGrid = document.getElementById("upperGrid");
+        const lowerGrid = document.getElementById("lowerGrid");
+
+        // Sample data for demonstration
+        const boxes = [
+          { name: "Box 1", number: 101 },
+          { name: "Box 2", number: 102 },
+          { name: "Box 3", number: 103 },
+          // Add more boxes as needed
+        ];
+
+        const lowerBoxes = [
+          { name: "Box 1", number: 101 },
+          // Add more boxes as needed
+        ];
+
+        // Function to create grid items
+        function createGridItems(container, data) {
+          container.innerHTML = ""; // Clear existing content
+          data.forEach((box) => {
+            const gridItem = document.createElement("div");
+            gridItem.classList.add("grid-item");
+
+            // Create separate elements for name and number with classes
+            const nameElement = document.createElement("div");
+            nameElement.classList.add("name"); // Add class "name"
+            nameElement.textContent = box.name;
+
+            const numberElement = document.createElement("div");
+            numberElement.classList.add("number"); // Add class "number"
+            numberElement.textContent = box.number;
+
+            // Append name and number elements to grid item
+            gridItem.appendChild(nameElement);
+            gridItem.appendChild(numberElement);
+
+            container.appendChild(gridItem);
+          });
+        }
+
+        // Add click event listener to upper grid
+        upperGrid.addEventListener("click", function (event) {
+          const target = event.target;
+          if (target.classList.contains("grid-item")) {
+            const boxNumber = parseInt(
+              target.querySelector(".number")?.textContent,
+              10
+            );
+            if (!isNaN(boxNumber)) {
+              const selectedBoxIndex = boxes.findIndex(
+                (box) => box.number === boxNumber
+              );
+              if (selectedBoxIndex !== -1) {
+                const selectedBox = boxes[selectedBoxIndex];
+                lowerBoxes.push(selectedBox);
+                boxes.splice(selectedBoxIndex, 1); // Remove from the upper array
+                createGridItems(lowerGrid, lowerBoxes);
+                createGridItems(upperGrid, boxes);
+              }
+            }
+          }
+        });
+
+        // Add click event listener to lower grid
+        lowerGrid.addEventListener("click", function (event) {
+          const target = event.target;
+          if (target.classList.contains("grid-item")) {
+            const boxNumber = parseInt(
+              target.querySelector(".number")?.textContent,
+              10
+            );
+            if (!isNaN(boxNumber)) {
+              const selectedBoxIndex = lowerBoxes.findIndex(
+                (box) => box.number === boxNumber
+              );
+              if (selectedBoxIndex !== -1) {
+                const selectedBox = lowerBoxes[selectedBoxIndex];
+                boxes.push(selectedBox);
+                lowerBoxes.splice(selectedBoxIndex, 1); // Remove from the lower array
+                createGridItems(upperGrid, boxes);
+                createGridItems(lowerGrid, lowerBoxes);
+              }
+            }
+          }
+        });
+
+        // Initial rendering
+        createGridItems(upperGrid, boxes);
+        createGridItems(lowerGrid, lowerBoxes);
+      });
+    </script>
+  </body>
+</html>
